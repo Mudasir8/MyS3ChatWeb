@@ -15,6 +15,5 @@ Technology Used:
 6) Bootstrap
 
 
-![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
 
-![alt text](ttps://github.com/Mudasir8/MyS3ChatWeb/blob/master/MyS3Chat/Content/Images/MyS3ChatScreenShot.png)
+![alt text](https://github.com/Mudasir8/MyS3ChatWeb/blob/master/MyS3Chat/Content/Images/MyS3ChatScreenShot.png)
