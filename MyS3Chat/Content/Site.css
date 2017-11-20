@@ -1,0 +1,405 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    
+}
+
+
+
+
+.body-content {
+    width:800px;
+  
+    border: 2px solid #0c3ab9;
+    padding-left: 15px;
+    padding-right: 15px;
+    
+
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+
+.customhover{
+     background-color:#0B1E63;
+}
+
+.customhover li:hover{
+    background-color:#0c3ab9;
+}
+
+
+
+.custombtn-default {
+  color:white;
+  background-color:#0B1E63;
+  border-color: #cccccc;
+}
+
+.custombtn-default:hover,
+.custombtn-default:focus,
+.custombtn-default:active,
+.custombtn-default.active,
+.open .dropdown-toggle.custombtn-default {
+  color: white;
+  background-color:#0c3ab9;
+  border-color: #adadad;
+}
+
+.custombtn-default:active,
+.custombtn-default.active,
+.open .dropdown-toggle.custombtn-default {
+  background-image: none;
+}
+
+.app-body{
+    width:800px;
+    margin: 0 auto;
+    border: 2px solid #0c3ab9;
+    height:500px;
+    margin-top: -30px;
+    border-radius: 10px;
+    /*overflow: scroll;*/
+
+    
+}
+
+.topbar{
+    background:#0B1E63;
+
+   
+    height:45px;
+    padding:2px;
+   
+ 
+}
+
+
+
+
+.register{
+    
+    margin: 0 auto;
+
+  width:90%;
+    height:370px;
+    overflow: scroll;
+
+}
+
+.green{
+    
+    color:green;
+}
+
+
+
+.tabs{
+    margin-top: 10px;
+    /*background: #808080;*/
+  
+    text-align:center;
+
+}
+
+.tabs li{
+      
+ 
+    width:33%;
+}
+
+
+#topbutton{
+    position:static;
+    margin-top: -40px;
+}
+
+
+.livesearchdiv{
+    
+    margin: 0 auto;
+
+    width: 200px;
+}
+
+
+
+.livesearchdiv ul{
+    
+    margin: 0 auto;
+    width: 200px;
+    padding:0;
+
+}
+
+
+.livesearchli li{
+ 
+   
+    padding-top:0;
+
+}
+
+
+.livesearchli img{
+    width:40px;
+  
+
+}
+
+
+
+.messages-list{
+    /*background-color:#ff6a00;*/
+
+    height:320px;
+
+    overflow:scroll;
+    border:none;
+  
+    
+}
+
+.list-group-item{
+    border:none;
+   
+    padding-top:0;
+    padding-bottom:0;
+
+}
+
+
+::-webkit-scrollbar { 
+    display: block; 
+}
+
+
+
+.homelogo{
+
+  
+    margin: 0 auto;
+    width:90%;
+    padding:3px;
+   height:100px;
+    
+    
+}
+
+.homelogo img{
+    
+    padding:3px;
+    max-height:120px;
+   
+    
+    
+}
+
+.homelogin{
+   
+    margin: 0 auto;
+    padding:5px;
+    width:90%;
+   
+}
+
+
+.sendmail{
+    width:300px;
+    margin: 0 auto;
+    padding:10px;
+
+}
+
+
+
+.emailsuccess{
+    padding:10px;
+}
+
+
+.profilebtndiv{
+   margin-top:-10px;
+   
+}
+
+.profilebtndiv ul{
+   margin-top:-10px;
+}
+
+
+
+
+.livesearchdivtop{
+   
+   margin: 0 auto;
+   margin-top:3px;
+   width:70%;
+  
+    
+}
+
+
+.showprofile{
+    width:80%;
+    margin: 0 auto;
+}
+
+.showprofile img{
+    width:60%;
+    max-width:250px;
+    margin: 0 auto;
+}
+
+.settings{
+    width:90%;
+    margin: 0 auto;
+}
+
+
+.msgbodygreen p{
+
+   
+    width:90%;
+    text-align: left;
+   overflow-wrap:break-word;
+   margin-left: 40px;
+
+}
+
+.msgbodygreen img{
+
+   
+   float:left;
+ position:static;
+
+}
+
+
+.msgbodywhite p{
+      
+    text-align: right;
+   overflow-wrap:break-word;
+   margin-right:40px;
+}
+
+.msgbodywhite img{
+ float:right;
+ position:static;
+}
+
+
+.text-area{
+   margin-bottom:10px;
+   margin:0 auto;
+}
+
+.text-area textarea{
+  
+    
+   min-width:90%;
+   margin-bottom:20px;
+   margin:0 auto;
+   float:left;
+   margin-left:5px;
+
+
+
+}
+
+.text-area a{
+   
+    
+margin-right:20px;
+margin-bottom:30px;
+/*float:right;*/
+color:#0B1E63;
+font-size:20px;
+margin-left:1px;
+
+}
+
+.chatname{
+    
+   
+    margin-top:1px;
+    margin-bottom:5px;
+
+    background-color:#424776;
+    padding-left:5px;
+    height:40px;
+   
+}
+
+
+
+.chatname button {
+
+      background-color:#424776;
+  
+}
+
+.chatname button:hover {
+
+      background-color:#0c3ab9;
+
+}
+
+.chatname span{
+
+    font-size:20px;
+    color:white;
+
+
+}
+
+
+
+.homemsgstab{
+
+    width:100%;
+
+    text-align:left;
+
+    padding-bottom:10px;
+  
+
+}
+
+.homemsgstab img{
+
+    float:left;
+  
+
+}
+
+a:hover{
+    text-decoration:none;
+    color:#0B1E63;
+
+}
+
+.notif{
+    background-color:#0B1E63;
+}
+
+.chatdropdowndiv{
+
+   height:5px;
+}
+
+
+
