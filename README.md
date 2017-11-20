@@ -13,3 +13,6 @@ Technology Used:
 5) JQuery
 
 6) Bootstrap
+
+
+![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png
