@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MyS3Chat</title>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/Images/icon-4kb.png" />
+
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <div class="app-body img-responsive">
+
+        <!--topbar start-->
+
+        <div class="topbar">
+
+            <div class="col-xs-2 pull-left">
+
+                <a href="~/">
+                    <img src="~/Content/Images/icon-4kb.png" width="60" class="pull-left img-circle" />
+                    @*<span class="fa fa-arrow-circle-left" style="font-size:40px;"></span>*@
+                </a>
+
+            </div>
+
+            <div class="col-xs-7 livesearchdivtop">
+
+                <!-- serach box  start -->
+                <div class="dropdown open livesearchdiv">
+
+                    <input type="text" class="searchtext form-control" id="searchtext" placeholder="Search for people..." />
+                    <ul class="dropdown-menu" id="livesearchul">
+
+                        @*<li><a href=""> <img src="" width="30"  /> Firstname LastName </a></li>*@
+
+
+                    </ul>
+                </div>
+
+                <!-- serach box  end-->
+
+                </div>
+
+
+            <div class="col-xs-2 pull-right">
+
+                <!-- dropdown button start -->
+
+                <div class="dropdown pull-right profilebtndiv">
+                    <button class="btn btn-default btn-outline dropdown-toggle" type="button" data-toggle="dropdown" id="topbutton">
+                        <img src="~/Uploads/@ViewBag.LoggedUserImagePath" class="img-circle" width="25" />
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+
+                        <li>
+                            <a href="~/Profile/Show" role="menuitem">
+                                <span class="fa fa-user-circle"></span>  @ViewBag.UserFirstName
+                            </a>
+                        </li>
+
+                        <li><a href="~/Profile/Edit/@User.Identity.Name"> <span class="fa fa-gear"></span> Settings</a></li>
+
+
+                        <li class="divider"></li>
+
+                        <li><a href="@Url.Action("Logout","Account")"><span class="fa fa-sign-out"></span>Logout</a></li>
+
+                    </ul>
+                </div>
+
+                <!-- dropdown button end-->
+
+
+                </div>
+
+                </div>
+
+        <!--topbar end-->
+
+        <div>
+
+            @RenderBody()
+
+        </div>
+
+
+    </div>
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
+    <script src="~/Scripts/Custom/LiveSearchBox.js"></script>
+
+</body>
+</html>

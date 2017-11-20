@@ -1,0 +1,141 @@
+﻿@model MyS3Chat.Models.UserViewModel
+
+@{
+    ViewBag.Title = Model.FirstName + " " + Model.LastName;
+}
+
+
+
+<div id='loading' style='display:none' class="pull-left">
+    <img src="~/Content/Images/ajax-loaderblack.gif" />
+</div>
+
+<div class="showprofile">
+    <br />
+
+
+  
+    
+
+    <br />
+
+
+      
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><span class="fa fa-user-circle"></span> Profile</div>
+        <div class="panel-body">
+
+            <div class="col-xs-7 text-center pull-left">
+
+                <label class="badge pull-left btn">
+                    <span class="fa fa-camera"></span>
+                    <input type="file" name="file" id="file" style="display:none;" />
+                </label>
+
+
+                <img src="~/Uploads/@Model.ImagePath" class="img-circle img-responsive" />
+                <h3> @Model.FirstName @Model.LastName   </h3>
+
+                @Model.Status
+
+            </div>
+
+           <div class="col-xs-5">
+               <a href="~/Profile/Edit/@Model.UserName" class="btn custombtn-default btn-block"><span class="fa fa-edit"></span> Edit</a>
+
+           </div>
+          
+
+            
+           
+
+        </div>
+    </div>
+
+   
+   
+
+
+</div>
+
+
+
+
+
+@section scripts{
+
+
+    <script>
+
+        $(document).ajaxStart(function () {
+            $("#loading").show();
+        });
+
+        $(document).ajaxStop(function () {
+            $('#loading').hide();
+        });
+
+        $(document).ready(function () {
+
+
+
+
+
+        /////////////////////////////// upload images start
+
+
+            $("#file").change(function () {
+
+
+        
+
+            var fm = $(this);
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("file").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("file").files[i];
+
+                formData.append("file", file);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/Ajax/UploadImage/@Model.ID',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+
+
+            }).done(function (data) {
+                if (data.Result == "ok") {
+                    // alert(data.Result);
+                   location.reload();
+
+                }
+                else {
+                    alert(data.Result);
+                }
+
+            });
+
+
+        });
+
+
+        /////////////////////////////// upload images end
+
+
+
+
+
+
+
+    }); // ready end
+
+    </script>
+
+}
+

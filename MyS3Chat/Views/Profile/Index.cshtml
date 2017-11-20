@@ -1,0 +1,234 @@
+﻿@model MyS3Chat.Models.UserViewModel
+
+@{
+    ViewBag.Title = Model.FirstName + " " + Model.LastName;
+}
+
+
+
+<div id='loading' style='display:none' class="pull-left">
+    <img src="~/Content/Images/ajax-loaderblack.gif" />
+</div>
+
+<div class="showprofile">
+
+    <br />
+
+    <br />
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            
+            <span class="fa fa-user-circle"></span> Profile
+            <div class="pull-right">
+                @if (ViewBag.AreFriends == "true")
+                {
+                    <span class="fa fa-thumbs-o-up text-success" style="font-size:16px;"> Friends</span>
+
+                }
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <div class="col-xs-7 pull-left text-center">
+                <img src="~/Uploads/@Model.ImagePath" class="img-circle img-responsive" />
+
+                <h3> @Model.FirstName @Model.LastName  </h3>
+                      @Model.Status
+
+               
+
+
+            </div>
+
+            <div class="col-xs-5">
+
+
+                <div class="friends">
+                    @if (ViewBag.AreFriends == "pending")
+                    {
+                        <div class="arefriendsdiv text-success text-center">
+                            <p>Pending friend request.</p>
+                        </div>
+                    }
+                    else if (ViewBag.AreFriends == "false")
+                    {
+                        <div class="arefriendsdiv afc">
+                            <a href="#" class="addfriend btn custombtn-default">
+                            <span class="fa fa-plus-circle"></span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        
+
+
+                        <a href="~/Chat/@Model.UserName" class="btn custombtn-default"><span class="fa fa-envelope"></span> </a>
+
+                      
+
+                        <a href="#" id="removefriend" class="btn btn-danger"><span class="fa fa-remove"></span></a>
+
+                    }
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+<script>
+
+    $(document).ajaxStart(function () {
+        $("#loading").show();
+    });
+
+    $(document).ajaxStop(function () {
+        $('#loading').hide();
+    });
+  
+
+    $(document).ready(function () {
+
+
+        // setup hub connection
+        var hub = $.connection.echo;
+
+
+        // hub js functions here start
+
+
+        // hub js functions here end
+
+
+
+        
+        /////////////////////////////////////////////// connect to hub start
+        $.connection.hub.start().done(function () {
+       
+
+
+
+    //////////////////////////////////////////////////// /add friend starts
+
+    $("a.addfriend").click(function (e) {
+        e.preventDefault();
+
+        var friendUserName = '@Model.UserName';
+
+        var url = "/ajax/AddFriend";
+
+        $.post(url, { friendUserName: friendUserName }, function (data) {
+            $('.arefriendsdiv').addClass("text-success").html('<p>Pending friend request.</p>');
+        }).done(function () {
+            // alert(friendUserName);
+            hub.server.newFriendRequestNotification(friendUserName);
+        });
+    });
+
+        /////////////////////////////////////////////////////add friend ends
+
+
+
+
+
+
+
+
+
+
+
+        /////////////////////////////////////////////////////send message start
+
+
+        $("body").on("click", "a#sendmsg", function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var friend = '@Model.UserName';
+            var message = $("#msgarea").val();
+            var url = "/ajax/SendMessage";
+
+            $.post(url, { friend: friend, message: message }, function (data) {
+            }).done(function () {
+
+              //  hub.server.notifyOfMessage(friend);
+                $("#msgarea").val("");
+                $this.parent().find(".sendmsgnotif").removeClass("hide");
+                setTimeout(function () {
+                    $this.parent().find(".sendmsgnotif").fadeOut("fast", function () {
+                        $this.parent().find(".sendmsgnotif").addClass("hide");
+                    });
+                }, 2000);
+            });
+
+        });
+
+        /////////////////////////////////////////////////////send message end
+
+
+
+
+
+
+
+
+        /////////////////////////////////////////////////////remove from friends start
+
+
+      
+            $("body").on("click", "a#removefriend", function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+
+                var friendUserName = '@Model.UserName';
+
+                var url = "/ajax/RemoveFriend";
+
+                $.post(url, { friendUserName: friendUserName }, function (data) {
+                }).done(function () {
+
+                    location.reload();
+
+                   // $this.parent().fadeOut("fast");
+                   // hub.server.getFrcount();
+                   // hub.server.getFcount(friendId);
+                });
+
+            });
+
+            //////////////////// accept friend request ends
+
+
+        /////////////////////////////////////////////////////remove from friends end
+
+
+
+
+        });  //.done ends
+
+
+    }); // ready end
+
+</script>
+
+}

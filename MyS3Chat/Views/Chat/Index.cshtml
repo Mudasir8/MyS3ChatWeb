@@ -1,0 +1,338 @@
+﻿@model MyS3Chat.Models.ChatViewModel
+
+@{
+    ViewBag.Title = Model.FriendProfile.FirstName + " " + Model.FriendProfile.LastName;
+}
+
+<div>
+    
+        <div class="chatname">
+
+            <div>
+
+                <a href="~/Profile/@Model.FriendProfile.UserName">
+                    <img src="~/Uploads/@Model.FriendProfile.ImagePath" class="img-circle" width="30" />
+                    <span>
+
+                        &nbsp;  @Model.FriendProfile.FirstName @Model.FriendProfile.LastName
+                    </span>
+                </a>
+            </div>
+
+            <!-- dropdown button start -->
+
+            <div class="dropdown pull-right chatdropdowndiv">
+                <button class="btn btn-default btn-outline dropdown-toggle" type="button" data-toggle="dropdown" id="topbutton">
+                    
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+
+                    <li>
+                        <a href="#" class="removeconservation" role="menuitem">
+                          <i class="fa fa-remove"></i>  Remove Conservation
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- dropdown button end-->
+         </div>
+
+   
+
+
+
+    
+
+    <div class="list-group messages-list">
+
+
+      
+
+
+      @foreach (var item in Model.MessagesList.OrderBy(x => x.DateSent))
+      {
+          if (item.From == Model.FriendProfile.ID)
+          {
+            <div class="list-group-item text-left col-xs-12">
+                <div class="alert alert-success">
+                    <div class="msgbodygreen">
+                        <img src="~/Uploads/@item.SentFromProfile.ImagePath" width="30" class="img-circle" />
+
+                        <p >
+                            @item.Msg
+                            <br />
+                            @item.DateSent.ToString("g")
+
+
+                        </p>
+                       
+                    </div>
+
+                </div>
+            </div>
+          }
+          else { 
+          <div class="list-group-item col-xs-12">
+
+              <div class="alert alert-info">
+
+                  <div class="msgbodywhite">
+                      <img src="~/Uploads/@item.SentFromProfile.ImagePath" width="30" class="img-circle" />
+
+                       <p>
+                        @item.Msg
+                           <br />
+                           <span>@item.DateSent.ToString("g")</span>
+                      </p>
+                    
+                      
+                     
+
+                  </div>
+              </div>
+          </div>
+          }
+      }
+
+
+    </div>
+
+</div>
+
+ <!-- send message textarea start-->
+
+<div class="text-area" >
+
+
+   
+    <div class="sendmsgparent">
+        <div class="msgtextarea">
+            
+                <textarea class="form-control" rows="2"  id="msgarea"></textarea>
+            
+             <a href="#" id="sendmsg" class="ta"><span class="fa fa-send"></span></a>
+        </div>
+    </div>
+   
+
+</div>
+
+ <!-- send message textarea end-->
+
+
+
+<audio src="~/Content/Audio/notification.mp3" id="audio" preload="auto"></audio>
+
+
+
+@section scripts{
+
+<script src="~/Scripts/jquery.signalR-2.1.2.min.js"></script>
+<script src="/signalr/hubs"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var div = $("div.messages-list");
+            div.scrollTop(div.prop("scrollHeight"));
+
+            $(".msgtextarea").find("textarea").focus();
+
+
+
+         /////////////////////////////////////////////////////////////////////////////////////hub start
+
+
+            // setup hub connection
+            var hub = $.connection.echo;
+
+            ///////////////////js client side  functions starts
+
+
+            //////////// newMessagesToCaller js function start
+
+            hub.client.newMessagesToCaller = function (unreadMsgschatVM) {
+
+                for (var i = 0; i < unreadMsgschatVM.MessagesList.length; i++) {
+
+                    var item = unreadMsgschatVM.MessagesList[i];
+
+
+                    var formattedDate = new Date(item.DateSent);
+                    var d = formattedDate.getDate();
+                    var m = formattedDate.getMonth();
+                    var m = formattedDate.getMonth();
+                    m += 1;  // JavaScript months are 0-11
+                    var y = formattedDate.getFullYear();
+                    var hour = formattedDate.getUTCHours();
+                    var mints = formattedDate.getMinutes();
+
+
+                    var dateSent = d + "-" + m + "-" + y + " " + hour + ":" + mints;
+
+
+                    $(".messages-list").append('<div class="list-group-item col-xs-12"> <div class="alert alert-info"><div class="msgbodywhite"> <img src="/Uploads/' + item.SentFromProfile.ImagePath + '" width="30" class="img-circle" /><p>' + item.Msg + ' <br />  <span>' + dateSent + '</span> </div></div></div> ');
+
+                        var div = $("div.messages-list");
+
+                        div.scrollTop(div.prop("scrollHeight"));
+
+
+
+                }
+            }
+
+
+            //////////// newMessagesToCaller js function end
+
+
+            //////////// newMessagesToOther js function start
+
+            hub.client.newMessagesToOther = function (msgSendingUserName, friendUserName, unreadMsgschatVM) {
+                //  alert('/Chat/' + msgSendingUserName + '');
+
+              //  alert('@Request.Url' + '@Request.RawUrl' + '@Request.UrlReferrer');
+                //   alert(friendUserName + "equal" + '@User.Identity.Name' + "and" + '@Request.Url' + "equal" + '/Chat/' + msgSendingUserName);
+
+                var clientUrl = '@Request.Url';
+                var loggedUser = '@User.Identity.Name';
+                var msgToGoUrl = 'http://localhost:54926/Chat/' + msgSendingUserName;
+
+               // alert(clientUrl);
+               // alert(loggedUser);
+               //  alert(msgToGoUrl);
+               // alert(friendUserName + " " + loggedUser + " " + clientUrl + " " + msgToGoUrl);
+
+
+                if (friendUserName == loggedUser && clientUrl == msgToGoUrl) {
+
+                    for (var i = 0; i < unreadMsgschatVM.MessagesList.length; i++) {
+
+                        var item = unreadMsgschatVM.MessagesList[i];
+
+                        var formattedDate = new Date(item.DateSent);
+                        var d = formattedDate.getDate();
+                        var m = formattedDate.getMonth();
+                        var m = formattedDate.getMonth();
+                        m += 1;  // JavaScript months are 0-11
+                        var y = formattedDate.getFullYear();
+                        var hour = formattedDate.getUTCHours();
+                        var mints = formattedDate.getMinutes();
+
+
+                        var dateSent = d + "-" + m + "-" + y + " " + hour + ":" + mints;
+
+
+                        $(".messages-list").append('<div class="list-group-item text-left col-xs-12"><div class="alert alert-success"><div class="msgbodygreen"><img src="/Uploads/' + item.SentFromProfile.ImagePath + ' " width="30" class="img-circle" /><p>' + item.Msg + '</p> <br /> ' + dateSent + '</p> </div></div> </div> ');
+                        var div = $("div.messages-list");
+                        div.scrollTop(div.prop("scrollHeight"));
+
+                        document.getElementById('audio').play();
+
+                    }
+               
+                }
+              
+            }
+
+            //////////// newMessagesToOther js function end
+
+
+
+            ///////////////////js client side functions ends
+
+
+            /////////////////////////////////////////////// connect to hub start
+            $.connection.hub.start().done(function () {
+
+
+
+
+
+
+        /////////////////////////////////////////////////////send message start
+
+
+        $("body").on("click", "a#sendmsg", function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var friend = '@Model.FriendProfile.UserName';
+            var message = $("#msgarea").val();
+            var url = "/ajax/SendMessage";
+
+            $.post(url, { friend: friend, message: message }, function (data) {
+            }).done(function () {
+                   hub.server.notifyOfMessage(friend);
+                   $("#msgarea").val("");
+
+                });
+        });
+
+
+
+
+        ////////////////////////////  catch enter press start
+
+        $("body").on("keypress", ".msgtextarea textarea", function (e) {
+        if (e.which == 13) {
+            $(this).parent().find("a#sendmsg").click();
+            setTimeout(function () {
+                $(this).parent().find("textarea").focus();
+            }, 0);
+        }
+
+    });
+
+        ////////////////////////////catch enter press end
+
+
+
+                /////////////////////////////////////////////////////send message end
+
+
+
+
+                /////////////////////////////////////////////////////remove conservation start
+
+
+        $("body").on("click", "a.removeconservation", function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var friendUsername = '@Model.FriendProfile.UserName';
+
+            var url = "/ajax/RemoveConservation";
+
+            $.post(url, { friendUsername: friendUsername }, function (data) {
+            }).done(function () {
+                // hub
+              //  alert("suucess");
+                $("div.messages-list").empty();
+
+
+            });
+        });
+
+                /////////////////////////////////////////////////////remove conservation end
+
+
+                //////////////////////////////////////////////////// connect to hub end
+
+
+            }); // connection .done() end
+
+
+
+
+    }); // ready end
+
+    </script>
+
+}

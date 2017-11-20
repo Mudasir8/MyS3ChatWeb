@@ -1,0 +1,394 @@
+﻿@model MyS3Chat.Models.UserCompleteViewModel
+
+@{
+    ViewBag.Title = Model.User.FirstName + " " + Model.User.LastName;
+
+}
+
+
+<!--Tabs starts-->
+<div class="tabs">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+
+        <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+            Friend Requests 
+          
+                <span class="badge notif hide" id="newfriendrequest">New</span>
+
+         
+             </a></li>
+
+        <li role="presentation" class="active"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+            Chat
+                <span class="badge notif hide" id="new">New</span>
+            </a></li>
+
+        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Friends</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <!-- Notification Tab content start -->
+
+        <div role="tabpanel" class="tab-pane" id="home">
+            <hr />
+
+            <!--Friend request notification starts-->
+            <div class="list-group" id="frndrequestslist">
+
+                @foreach (var item in Model.FriendRequestsList)
+                {
+
+                <div class="list-group-item">
+                    <a href="~/Profile/@item.UserName">
+                        <img src="~/Uploads/@item.ImagePath" width="40" class="img-circle" />
+                        <span> @item.FirstName  @item.LastName</span>
+                    </a>
+                    <a href="#" data-id="@item.ID" class="accept btn btn-success"><span class="fa fa-check"></span></a>
+
+                    <a href="#" data-id="@item.ID" class="decline btn btn-danger"><span class="fa fa-remove"></span></a>
+
+                </div>
+                <hr />
+
+                }
+
+            </div>
+            <!--Friend request notification ends-->
+
+
+
+
+
+        </div>
+        <!-- Notification Tab content start -->
+        <!-- Chat Tab content start -->
+
+        <div role="tabpanel" class="tab-pane active" id="profile">
+
+            <hr />
+
+        <div class="list-group" id="msgslist">
+           
+
+            @if (TempData["welcome"] != null)
+            {
+                <div class="list-group-item homemsgstab">
+                    <p class="alert alert-success">
+                        @TempData["welcome"]
+                    </p>
+                </div>
+            }
+
+            @if (Model.MessagesList == null)
+            {
+                <div class="list-group-item homemsgstab">
+                <p class="alert alert-info">
+                    You do not have any messages.
+                </p>
+               </div>
+              }
+
+
+                else if (Model.MessagesList != null)
+                {
+
+                    foreach (var item in Model.MessagesList)
+                    {
+                        <a href="~/Chat/@item.SentFromProfile.UserName" id="homemsgstabtop">
+                            <div class="list-group-item homemsgstab">
+
+                                <img src="~/Uploads/@item.SentFromProfile.ImagePath" width="40" class="img-circle" />
+                                <span>@item.SentFromProfile.FirstName  @item.SentFromProfile.LastName </span>
+                                <br />
+
+                                <span>
+                                    @if (item.Msg.Length < 30)
+                                    {
+                                        @item.Msg
+                                    }
+
+                                    else
+                                    {
+
+                                        @item.Msg.ToString().Substring(0, 29) <span>...</span>
+
+                                    }
+
+                                </span>
+
+                                <br />
+                                <span class="pull-right">@item.DateSent</span>
+
+                            </div>
+                        </a>
+                        <hr />
+
+                    }
+                }
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+        <!-- Chat Tab content end -->
+        <!-- Friends Tab content start -->
+
+
+        <div role="tabpanel" class="tab-pane" id="messages">
+
+           <hr />
+            
+            <!-- Friends List start-->
+            <div class="list-group friendsList">
+                @if (Model.FriendsList.Count > 0)
+                {
+
+                    foreach (var item in Model.FriendsList)
+                    {
+                    <a href="~/Chat/@item.UserName">
+                        <div class="list-group-item homemsgstab">
+
+                            <img src="~/Uploads/@item.ImagePath" width="40" class="img-circle" />
+                            &nbsp;
+                            <span class="text-success">
+                                @item.FirstName @item.LastName
+                            </span>
+
+                        </div>
+                    </a>
+                    <hr />
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item homemsgstab">
+                            <p class="alert alert-info">
+                                You do not have any friends.Search for friends from search box above and add them.
+                            </p>
+                    </div>
+
+                }
+
+            </div>
+
+            <!-- Friends List end-->
+
+            
+
+
+
+        </div>
+
+
+        <!-- Friends Tab content end -->
+
+
+
+    </div>
+</div>
+
+
+<!--Tabs end-->
+
+
+<audio src="~/Content/Audio/notification.mp3" id="audio" preload="auto"></audio>
+
+
+
+
+@section scripts{
+
+
+    <script src="~/Scripts/jquery.signalR-2.1.2.min.js"></script>
+
+    <script src="/signalr/hubs"></script>
+
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            // setup hub connection
+            var hub = $.connection.echo;
+
+            //////////// refreshFriendsList js function start
+
+            hub.client.refreshFriendsList = function (friendsList) {
+                $("div.friendsList").empty();
+
+                for (var i = 0; i < friendsList.length; i++) {
+                    var item = friendsList[i];
+
+                    $("div.friendsList").append('<a href="/Chat/' + item.UserName + '"><div class="list-group-item homemsgstab"><img src="/Uploads/' + item.ImagePath + '" width="40" class="img-circle" />&nbsp;<span class="text-success">' + item.FirstName + ' ' + item.LastName + ' </span></div> </a><hr />');
+                    
+                    
+                }
+
+            }
+
+            //////////// refreshFriendsList js function end
+
+
+            //////////// newFriendRequest js function start
+
+            hub.client.newFriendRequest = function (allFriendsRequestList,friendUserName) {
+
+                if(friendUserName == '@Model.User.UserName'){
+
+               // if (allFriendsRequestList.length > 0) {
+
+                    $("#frndrequestslist").empty();
+
+                    for (var i = 0; i <allFriendsRequestList.length; i++) {
+                        var item = allFriendsRequestList[i];
+    
+                    
+
+                    $("#frndrequestslist").append('<div class="list-group-item"> <a href="/Profile/'+item.UserName+'"> <img src="/Uploads/'+item.ImagePath+'" width="40" class="img-circle" /> <span> '+item.FirstName+'  '+item.LastName+'</span> </a> <a href="#" data-id="'+item.ID+'" class="accept btn btn-success"><span class="fa fa-check"></span></a> <a href="#" data-id="'+item.ID+'" class="decline btn btn-danger"><span class="fa fa-remove"></span></a> </div>');
+
+
+                    document.getElementById('audio').play();
+
+                    $("#newfriendrequest").removeClass("hide");
+                  }
+
+                }
+
+
+            }
+
+            //////////// newFriendRequest js function end
+
+
+
+
+
+
+
+
+            //////////// newMessagesToOtherAtHome js function start
+            hub.client.newMessagesToOtherAtHome = function (friendUserName,allMsgsList) {
+               // alert("success");
+
+                if (friendUserName == '@Model.User.UserName') {
+
+                
+
+              //  if (allMsgsList.length > 0) {
+                    $("#msgslist").empty();
+
+                    for (var i = 0; i < allMsgsList.length; i++) {
+                        var item = allMsgsList[i];
+
+
+
+                        var formattedDate = new Date(item.DateSent);
+                        var d = formattedDate.getDate();
+                        var m = formattedDate.getMonth();
+                        var m = formattedDate.getMonth();
+                        m += 1;  // JavaScript months are 0-11
+                        var y = formattedDate.getFullYear();
+                        var hour = formattedDate.getUTCHours();
+                        var mints = formattedDate.getMinutes();
+
+                        var dateSent = d + "-" + m + "-" + y + " " + hour + ":" + mints;
+
+                        $("#msgslist").append('<a href="/Chat/' + item.SentFromProfile.UserName + '" id="homemsgstabtop"> <div class="list-group-item homemsgstab"> <img src="/Uploads/' + item.SentFromProfile.ImagePath + '" width="40" class="img-circle" /> <span>' + item.SentFromProfile.FirstName + '  ' + item.SentFromProfile.LastName + ' </span><br /><span> ' + item.Msg + ' </span> <br /> <span class="pull-right">' + dateSent + '</span> </div></a>');
+                        document.getElementById('audio').play();
+
+                        $("#new").removeClass("hide");
+                        
+
+                    }
+
+                }
+
+            }
+
+            
+            //////////// newMessagesToOtherAtHome js function end
+
+            
+            /////////////////////////////////////////////// connect to hub start
+            $.connection.hub.start().done(function () {
+
+     
+           
+
+
+
+
+
+            //////////////////// accept friend request starts
+
+            $("body").on("click", "a.accept", function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+
+                var friendId = $this.data("id");
+
+                var url = "/ajax/AcceptFriendRequest";
+
+                $.post(url, { friendId: friendId }, function (data) {
+                }).done(function () {
+                    $this.parent().fadeOut("fast");
+
+                    hub.server.getFriendsCount(friendId);
+
+                    $("#newfriendrequest").addClass("hide");
+
+                });
+
+            });
+
+            //////////////////// accept friend request ends
+
+
+
+            //////////////////// Decline friend request star
+
+
+
+              $("body").on("click", "a.decline", function (e) {
+                                e.preventDefault();
+
+                                var $this = $(this);
+
+                                var friendId = $this.data("id");
+
+                                var url = "/ajax/DeclineFriendRequest";
+
+                                $.post(url, { friendId: friendId }, function (data) {
+                                }).done(function () {
+                                    $this.parent().fadeOut("fast");
+                                  //  hub.server.getFrcount();
+                                    $("#newfriendrequest").addClass("hide");
+
+                                });
+
+                            });
+
+            ///////////////////////////////////// Decline friend request end
+
+
+
+            });    /////////////////////////////////////////////// connect to hub end  // connection .done() end
+
+
+}); // ready end
+
+
+    </script>
+
+
+}

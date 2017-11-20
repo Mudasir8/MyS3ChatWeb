@@ -1,0 +1,256 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+@model MyS3Chat.Models.RegisterViewModel
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Signup for MyS3Chat</title>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/Images/icon-4kb.png" />
+
+
+</head>
+<body>
+    <div class="app-body img-responsive"> 
+
+
+     
+
+        <div class="homelogo">
+            <center>
+                <a href="~/"><img src="~/Content/Images/MyS3Chat13kb.png" class="img-responsive" /></a> 
+            </center>
+        </div>
+        <hr />
+
+   
+
+
+        <div class="register" style="height:360px;">
+
+
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger email-check" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+
+                        @Html.Label("", "Username", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger username-check" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create Account" class="btn custombtn-default btn-block" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+           
+
+            Already registered  <a href="~/Account">Login</a>
+            <br />
+            <a href="~/Account/ForgotPassword">Forgotten Password?</a>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+
+        $(document).ready(function () {
+
+
+
+            //////////////////////////// Email chek if exists already start
+
+            function isValidEmailAddress(emailAddress) {
+                var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+                return pattern.test(emailAddress);
+            };
+
+            $("#Email").focusout(function (e) {
+
+                e.preventDefault();
+                $this = $(this);
+
+
+               var email = $("#Email").val();
+
+               if (email == "") {
+                   $("#Email").addClass("alert alert-danger");
+                   return;
+               }
+
+               if (!isValidEmailAddress(email)) {
+                   $("#Email").addClass("alert alert-danger");
+
+                   return;
+               }
+
+                var url = '/Ajax/EmailCheck';
+
+                $.post(url, { email: email }, function (data) {
+                    var response = data.trim();
+
+                    if (response == "ok") {
+                        // show green ok sign
+                        $("#Email").removeClass("alert alert-danger");
+                        $("#Email").addClass("alert alert-success");
+
+
+                        $(':input[type="submit"]').prop('disabled', false);
+
+
+                    } else {
+                        // show message that email already exists
+                        $("#Email").removeClass("alert alert-success");
+                        $("#Email").addClass("alert alert-danger");
+
+
+                        $(".email-check").append('Email already exists');
+
+                        $(':input[type="submit"]').prop('disabled', true);
+                    }
+
+                });
+
+            });
+
+            //////////////////////////// Email chek if exists already end
+
+            //////////////////////////// username chek if exists already start
+
+
+
+
+            $("#UserName").focusout(function (e) {
+
+                e.preventDefault();
+                $this = $(this);
+
+
+                var username = $("#UserName").val();
+
+                if (username == "") {
+                    $("#UserName").addClass("alert alert-danger");
+                    return;
+                }
+
+
+
+                var url = '/Ajax/UserNameCheck';
+
+                $.post(url, { username: username }, function (data) {
+                    var response = data.trim();
+
+                    if (response == "ok") {
+                        // show green ok sign
+                        $("#UserName").removeClass("alert alert-danger");
+                        $("#UserName").addClass("alert alert-success");
+
+
+                        $(':input[type="submit"]').prop('disabled', false);
+
+
+                    } else {
+                        // show message that email already exists
+                        $("#UserName").removeClass("alert alert-success");
+                        $("#UserName").addClass("alert alert-danger");
+
+
+                        $(".username-check").append('Username already exists');
+
+                        $(':input[type="submit"]').prop('disabled', true);
+                    }
+
+                });
+
+            });
+
+
+
+            //////////////////////////// username chek if exists already end
+
+
+        }); // ready end
+
+    </script>
+
+    
+
+
+
+
+</body>
+</html>
