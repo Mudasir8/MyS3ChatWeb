@@ -2,14 +2,14 @@
 
 Technology Used:
 
-ASP.NET MVC 5
+1) ASP.NET MVC 5
 
-EntityFramework 6 Code First
+2) EntityFramework 6 Code First
 
-Razor
+3) Razor
 
-JavaScript
+4) JavaScript
 
-JQuery
+5) JQuery
 
-Bootstrap
+6) Bootstrap
