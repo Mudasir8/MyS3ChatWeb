@@ -14,6 +14,8 @@ Technology Used:
 
 6) Bootstrap
 
+Application Screen Shot
 
 
-![alt text](https://github.com/Mudasir8/MyS3ChatWeb/blob/master/MyS3Chat/Content/Images/MyS3ChatScreenShot.png)
+
+![MyS3Chat](https://github.com/Mudasir8/MyS3ChatWeb/blob/master/MyS3Chat/Content/Images/MyS3ChatScreenShot.png)
